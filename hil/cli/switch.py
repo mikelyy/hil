@@ -3,7 +3,7 @@ import click
 import sys
 import ast
 from hil.cli.client_setup import client
-
+from prettytable import PrettyTable
 
 @click.group()
 def switch():
@@ -23,7 +23,7 @@ def node_show(switch):
 def list_switches():
     """List all switches"""
     q = client.switch.list()
-    sys.stdout.write('%s switches :    ' % len(q) + " ".join(q) + '\n')
+    sys.stdout.write('%s switches :   ' % len(q) + " ".join(q) + '\n')
 
 
 @switch.command(name='register', short_help='Register a switch')

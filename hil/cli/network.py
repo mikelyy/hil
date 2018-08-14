@@ -2,7 +2,8 @@
 import click
 import sys
 from hil.cli.client_setup import client
-
+from prettytable import PrettyTable
+import json
 
 @click.group()
 def network():
@@ -37,16 +38,23 @@ def network_delete(network):
 def network_show(network):
     """Display information about network"""
     q = client.network.show(network)
+    x = PrettyTable()
+    x.field_names = ['attribute', 'info']
     for item in q.items():
-        sys.stdout.write("%s\t  :  %s\n" % (item[0], item[1]))
+        x.add_column(x.field_names[0],['access','channels','owner','name','connected-nodes'])
+        x.add_column(x.field_names[1],item[1][0],item[1][1],item[1][2],item[1][3],item[1][4])
+    print(x)
 
 
 @network.command(name='list')
 def network_list():
     """List all networks"""
     q = client.network.list()
+    x = PrettyTable()
     for item in q.items():
-        sys.stdout.write('%s \t : %s\n' % (item[0], item[1]))
+        x.add_row([item[0],item[1]])
+    print(x)
+
 
 
 @network.command('list-attachments')

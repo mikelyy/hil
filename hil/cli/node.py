@@ -2,7 +2,7 @@
 import click
 import sys
 from hil.cli.client_setup import client
-
+from prettytable import PrettyTable
 
 @click.group()
 def node():
@@ -15,9 +15,10 @@ def nodes_list(pool):
     """List all nodes or free nodes"""
     q = client.node.list(pool)
     if pool == 'all':
-        sys.stdout.write('All nodes %s\t:    %s\n' % (len(q), " ".join(q)))
+        sys.stdout.write('All nodes %s\t:   %s\n' % (len(q), " ".join(q)))
     else:
-        sys.stdout.write('Free nodes %s\t:   %s\n' % (len(q), " ".join(q)))
+        sys.stdout.write('Free nodes %s\t:  %s\n' % (len(q), " ".join(q)))
+
 
 
 @node.command(name='show')
@@ -25,8 +26,11 @@ def nodes_list(pool):
 def node_show(node):
     """Show node information"""
     q = client.node.show(node)
+    x=PrettyTable()
+    x.field_name = ['attribute','info']
     for item in q.items():
-        sys.stdout.write("%s\t  :  %s\n" % (item[0], item[1]))
+        x.add_row([item[0],item[1]])
+    print(x)
 
 
 @node.command(name='bootdev', short_help="Set a node's boot device")
