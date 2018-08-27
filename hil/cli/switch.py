@@ -23,8 +23,11 @@ def node_show(switch):
 def list_switches():
     """List all switches"""
     q = client.switch.list()
-    sys.stdout.write('%s switches :   ' % len(q) + " ".join(q) + '\n')
-
+    x=PrettyTable(['switch list'])
+    for switch in q:
+        x.add_row([switch])
+    print(x)
+    
 
 @switch.command(name='register', short_help='Register a switch')
 @click.argument('switch')

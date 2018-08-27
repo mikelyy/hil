@@ -40,9 +40,17 @@ def network_show(network):
     q = client.network.show(network)
     x = PrettyTable()
     x.field_names = ['attribute', 'info']
-    for item in q.items():
-        x.add_column(x.field_names[0],['access','channels','owner','name','connected-nodes'])
-        x.add_column(x.field_names[1],item[1][0],item[1][1],item[1][2],item[1][3],item[1][4])
+    for item, value in q.iteritems():
+        if item != 'connected-nodes':
+            if isinstance(value, unicode):
+                x.add_row([item,value])
+            else:
+                x.add_row([item,value[0].encode("utf-8")])
+        else:
+            for key1,value1 in value.iteritems():
+                #temp=[key1.encode("utf-8"),value1[0].encode("utf-8")]
+                #x.add_row([item.encode("utf-8"),":".join(temp)])
+                x.add_row([item.encode("utf-8"),key1.encode("utf-8")])
     print(x)
 
 
@@ -50,10 +58,19 @@ def network_show(network):
 def network_list():
     """List all networks"""
     q = client.network.list()
+    count=0
     x = PrettyTable()
-    for item in q.items():
-        x.add_row([item[0],item[1]])
-    print(x)
+    x.field_names = ['network name','network id','project name']
+    for key1,value1 in q.iteritems():
+        for key2,value2 in value1.iteritems():
+            if count%2==0:
+                pid=value2
+            else:
+                pname=value2
+            count+=1
+        x.add_row([key1,pid,pname[0].encode("utf-8")])
+    print(x)     
+    
 
 
 

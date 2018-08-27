@@ -14,11 +14,10 @@ def node():
 def nodes_list(pool):
     """List all nodes or free nodes"""
     q = client.node.list(pool)
-    if pool == 'all':
-        sys.stdout.write('All nodes %s\t:   %s\n' % (len(q), " ".join(q)))
-    else:
-        sys.stdout.write('Free nodes %s\t:  %s\n' % (len(q), " ".join(q)))
-
+    x=PrettyTable(['node list'])
+    for node in q:
+        x.add_row([node])
+    print(x)
 
 
 @node.command(name='show')
@@ -26,11 +25,33 @@ def nodes_list(pool):
 def node_show(node):
     """Show node information"""
     q = client.node.show(node)
-    x=PrettyTable()
-    x.field_name = ['attribute','info']
-    for item in q.items():
-        x.add_row([item[0],item[1]])
+    x = PrettyTable()
+    x.field_names = ['attribute','information']
+    for item,value in q.iteritems():
+        if isinstance(item, unicode):
+            item = item.encode("utf-8") 
+        if item == 'metadata':
+            for key0,value0 in value.iteritems():
+                temp1=[key0.encode("utf-8"),value0.encode("utf-8").strip('""')]
+                x.add_row([item,":".join(temp1)])   
+        elif item == 'nics':
+            for key1,value1 in value[0].iteritems():
+                if key1=='networks':
+                    for key2,value2 in value1.iteritems():
+                        #temp2=[key1.encode("utf-8"),":".join([key2.encode("utf-8"),value2.encode("utf-8")])]
+                        #x.add_row([item,":".join(temp2)])
+                        
+                        x.add_row([key1.encode("utf-8"),":".join([key2.encode("utf-8"),value2.encode("utf-8")])])
+                else:
+                    #x.add_row([item,":".join([key1.encode("utf-8"),value1.encode("utf-8")])])
+                    x.add_row([key1.encode("utf-8"),value1.encode("utf-8")])
+        else:
+            x.add_row([item,value])
     print(x)
+
+                
+    
+    
 
 
 @node.command(name='bootdev', short_help="Set a node's boot device")
