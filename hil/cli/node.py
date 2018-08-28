@@ -35,16 +35,13 @@ def node_show(node):
                 temp1=[key0.encode("utf-8"),value0.encode("utf-8").strip('""')]
                 x.add_row([item,":".join(temp1)])   
         elif item == 'nics':
-            for key1,value1 in value[0].iteritems():
-                if key1=='networks':
-                    for key2,value2 in value1.iteritems():
-                        #temp2=[key1.encode("utf-8"),":".join([key2.encode("utf-8"),value2.encode("utf-8")])]
-                        #x.add_row([item,":".join(temp2)])
-                        
-                        x.add_row([key1.encode("utf-8"),":".join([key2.encode("utf-8"),value2.encode("utf-8")])])
-                else:
-                    #x.add_row([item,":".join([key1.encode("utf-8"),value1.encode("utf-8")])])
-                    x.add_row([key1.encode("utf-8"),value1.encode("utf-8")])
+            for i in value:
+                for key1,value1 in i.iteritems():
+                    if key1=='networks':
+                        for key2,value2 in value1.iteritems():
+                            x.add_row([key1.encode("utf-8"),":".join([key2.encode("utf-8"),value2.encode("utf-8")])])
+                    else:
+                        x.add_row([key1.encode("utf-8"),value1.encode("utf-8")])
         else:
             x.add_row([item,value])
     print(x)

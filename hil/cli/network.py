@@ -48,8 +48,6 @@ def network_show(network):
                 x.add_row([item,value[0].encode("utf-8")])
         else:
             for key1,value1 in value.iteritems():
-                #temp=[key1.encode("utf-8"),value1[0].encode("utf-8")]
-                #x.add_row([item.encode("utf-8"),":".join(temp)])
                 x.add_row([item.encode("utf-8"),key1.encode("utf-8")])
     print(x)
 
